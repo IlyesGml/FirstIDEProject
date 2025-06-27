@@ -1,0 +1,12 @@
+../Core/Src/EPD_352_Interface.c:26:6:EPD_352_SendCommand	16	static
+../Core/Src/EPD_352_Interface.c:40:6:EPD_352_SendData	16	static
+../Core/Src/EPD_352_Interface.c:52:6:EPD_352_refresh	16	static
+../Core/Src/EPD_352_Interface.c:61:6:EPD_3IN52_lut	16	static
+../Core/Src/EPD_352_Interface.c:94:6:EPD_352_lut_GC	16	static
+../Core/Src/EPD_352_Interface.c:144:6:EPD_352_lut_DU	16	static
+../Core/Src/EPD_352_Interface.c:194:6:EPD_352_Init	8	static
+../Core/Src/EPD_352_Interface.c:242:6:EPD_352_display	16	static
+../Core/Src/EPD_352_Interface.c:250:6:EPD_352_display_NUM	24	static
+../Core/Src/EPD_352_Interface.c:334:6:EPD_352_Clear	4	static
+../Core/Src/EPD_352_Interface.c:341:6:EPD_352_sleep	4	static
+../Core/Src/EPD_352_Interface.c:348:6:EPD_352_Reset	8	static
