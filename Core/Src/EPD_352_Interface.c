@@ -197,7 +197,7 @@ void EPD_352_Init(void)
     EPD_352_Reset(); // Reset the display
 
     //HAL_GPIO_WritePin(SPI1_SCK_GPIO_Port,SPI1_SCK_Pin,GPIO_PIN_RESET);
-  //  EPD_352_SendCommand(0x00); // SPI INIT
+    EPD_352_SendCommand(0x00); // SPI INIT
     EPD_352_SendCommand(0x00); // Panel setting
     EPD_352_SendData(0xFF); // 0x0F: 1/7.5, 0x0B: 1/7, 0x0A: 1/6.5, 0x09: 1/6
     EPD_352_SendData(0x01); // 0x0F: 1/7.5, 0x0B: 1/7, 0x0A: 1/6.5, 0x09: 1/6
@@ -241,6 +241,13 @@ void EPD_352_Init(void)
  */
 void EPD_352_display(uint8_t* picData)
 {
+    uint16_t i;
+    EPD_352_SendCommand(0x13);		     //Transfer new data
+    for(i=0;i<(EPD_3IN52_WIDTH*EPD_3IN52_HEIGHT/8);i++)	     
+    {
+        EPD_352_SendData(*picData);
+        picData++;
+    }
 }
 /**
  * @brief

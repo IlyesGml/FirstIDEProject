@@ -111,24 +111,6 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-
-  uart_len = sprintf(uart_buf, "SPI_TEST: INIT\r\n");
-  HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
-
-  //DC Low
-  HAL_GPIO_WritePin(DAT_COM_GPIO_Port, DAT_COM_Pin, GPIO_PIN_RESET);
-  //CS Low
-  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
-  //Power On
-  HAL_GPIO_WritePin(PWR_GPIO_Port, PWR_Pin, GPIO_PIN_SET);
-  //RST high
-  HAL_GPIO_WritePin(RST_GPIO_Port, RST_Pin, GPIO_PIN_SET);
-
-
-
-
-  uart_len = sprintf(uart_buf, "SPI_TEST SEND COMMAND\r\n");
-  HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
   EPD_352_Init();
   EPD_352_display_NUM(EPD_3IN52_BLACK);
   EPD_352_lut_GC();
@@ -148,12 +130,12 @@ int main(void)
       }
   uart_len = sprintf(uart_buf, "Paint_NewImage\r\n");
   HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
-  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, 270, WHITE);
+  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_0, BLACK);
   Paint_Clear(WHITE);
 
   Paint_SelectImage(imagenoir);
   Paint_Clear(WHITE);
-  Paint_DrawBitMap(gImage_3in52);
+  Paint_DrawBitMap(gImage_Didou);
 
   EPD_352_display(imagenoir);
   EPD_352_lut_GC();
