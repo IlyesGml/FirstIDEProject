@@ -130,7 +130,7 @@ int main(void)
       }
   uart_len = sprintf(uart_buf, "Paint_NewImage\r\n");
   HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
-  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_0, BLACK);
+  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_0, WHITE);
   Paint_Clear(WHITE);
 
   Paint_SelectImage(imagenoir);
@@ -154,6 +154,18 @@ int main(void)
   {
 	  //HAL_GPIO_TogglePin(SPI1_SCK_GPIO_Port,SPI1_SCK_Pin);
 	  HAL_Delay(10000);
+    uint8_t patterns[] = {
+      EPD_3IN52_BLACK,
+      EPD_3IN52_WHITE,
+      EPD_3IN52_Chessboard,
+      EPD_3IN52_Crosstalk,
+      EPD_3IN52_Image
+    };
+    for (int i = 0; i < sizeof(patterns)/sizeof(patterns[0]); i++) {
+      EPD_352_display_NUM(patterns[i]);
+      EPD_352_lut_GC();
+      EPD_352_refresh();
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

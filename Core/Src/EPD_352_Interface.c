@@ -258,9 +258,9 @@ void EPD_352_display_NUM(uint8_t NUM)
 {
     uint16_t row, column;
     EPD_352_SendCommand(0x13);
-    for(column = 0; column < 200; column++)
+    for(column = 0; column < EPD_3IN52_HEIGHT; column++)
     {
-        for(row = 0; row < 200; row++)
+        for(row = 0; row < EPD_3IN52_WIDTH; row++)
         {
             switch (NUM)
             {
@@ -340,6 +340,14 @@ void EPD_352_display_NUM(uint8_t NUM)
  */
 void EPD_352_Clear(void)
 {
+    uint32_t i;
+    EPD_352_SendCommand(0x13); // Transfer new data
+    for(i = 0; i < (EPD_3IN52_WIDTH * EPD_3IN52_HEIGHT / 8); i++)
+    {
+        EPD_352_SendData(0xFF);
+    }
+    EPD_352_lut_GC();
+    EPD_352_refresh();
 }
 /**
  * @brief
@@ -347,6 +355,8 @@ void EPD_352_Clear(void)
  */
 void EPD_352_sleep(void)
 {
+    EPD_352_SendCommand(0x07);   // deep sleep
+    EPD_352_SendData(0xA5);
 }
 /**
  * @brief Reset the EPD 3.52" display.
