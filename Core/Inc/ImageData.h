@@ -41,6 +41,7 @@
 
 extern const unsigned char gImage_Didou[];
 extern const unsigned char gImage_3in52[];
+extern const unsigned char gImage_Palico[];
 
 
 

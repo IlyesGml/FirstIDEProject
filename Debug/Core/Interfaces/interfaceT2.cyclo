@@ -1,0 +1,3 @@
+../Core/Interfaces/interfaceT2.c:26:6:interfaceT2_allume	1
+../Core/Interfaces/interfaceT2.c:31:6:interfaceT2_eteint	1
+../Core/Interfaces/interfaceT2.c:36:6:interfaceT2_initialise	1

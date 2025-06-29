@@ -21,9 +21,29 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "../Pilotes/piloteIOB1.h"
+#include "../Pilotes/piloteIOT1.h"
+#include "../Pilotes/piloteIOT2.h"
+#include "../Pilotes/piloteIOT3.h"
+#include "../Pilotes/piloteIOT4.h"
+#include "../Pilotes/PiloteIO_SPI_EPAPER.h"
+#include "../Pilotes/PiloteTimer6Up.h"
+
+#include "../Interfaces/interfaceB1.h"
+#include "../Interfaces/interfaceT1.h"
+#include "../Interfaces/interfaceT2.h"
+#include "../Interfaces/interfaceT3.h"
+#include "../Interfaces/interfaceT4.h"
+
+
+#include "../Services/serviceBaseDeTemps.h"
+
 #include "EPD_352_Interface.h"
+
 #include "GUI_Paint.h"
 #include "ImageData.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +67,9 @@ I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 
+TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim6;
+
 UART_HandleTypeDef huart2;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
@@ -63,14 +86,51 @@ static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
-
+void main_initialiseAvantLeHAL(void);
+void main_initialiseApresLeHAL(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 const uint8_t EPD_BLACK = 0x00;
 const uint8_t EPD_WHITE = 0xFF;
+
+void neFaitRien(void)
+{
+
+}
+
+void main_initialiseAvantLeHAL(void)
+{
+  // Initialise les pilotes de p�riph�riques
+  piloteTimer6Up_initialise();
+  Pilote_CS0_EPAPER_initialise();
+  Pilote_DC_EPAPER_initialise();
+  Pilote_RST_EPAPER_initialise();
+  Pilote_BUSY_EPAPER_initialise();
+  // Initalise les pilotes d'entr�es/sorties
+  piloteIOB1_initialise();
+  piloteIOT1_initialise();
+  piloteIOT2_initialise();
+  piloteIOT3_initialise();
+  piloteIOT4_initialise();
+  // Initialise les interfaces
+  interfaceB1_initialise();
+  interfaceT1_initialise();
+  interfaceT2_initialise();
+  interfaceT3_initialise();
+  interfaceT4_initialise();
+  // Initialise the base de temps service
+  serviceBaseDeTemps_initialise();
+}
+
+void main_initialiseApresLeHAL(void)
+{
+	EPD_352_Init();
+}
 /* USER CODE END 0 */
 
 /**
@@ -110,8 +170,13 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_SPI2_Init();
+  MX_TIM3_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  EPD_352_Init();
+  main_initialiseApresLeHAL();
+
+
+
   EPD_352_display_NUM(EPD_3IN52_BLACK);
   EPD_352_lut_GC();
   EPD_352_refresh();
@@ -130,7 +195,7 @@ int main(void)
       }
   uart_len = sprintf(uart_buf, "Paint_NewImage\r\n");
   HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
-  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_0, WHITE);
+  Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_270, WHITE);
   Paint_Clear(WHITE);
 
   Paint_SelectImage(imagenoir);
@@ -142,7 +207,35 @@ int main(void)
   EPD_352_refresh();
   HAL_Delay(2000);
 
+    Paint_SelectImage(imagenoir);
+    Paint_Clear(WHITE);
+    EPD_352_lut_GC();
+    EPD_352_refresh();
+    EPD_352_display(imagenoir);
+    Paint_SelectImage(imagenoir);
+    Paint_Clear(WHITE);
+/*
+    Paint_DrawPoint(10, 80, BLACK, DOT_PIXEL_1X1, DOT_STYLE_DFT);
+    Paint_DrawPoint(10, 90, BLACK, DOT_PIXEL_2X2, DOT_STYLE_DFT);
+    Paint_DrawPoint(10, 100, BLACK, DOT_PIXEL_3X3, DOT_STYLE_DFT);
+    Paint_DrawLine(20, 70, 70, 120, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+    Paint_DrawLine(70, 70, 20, 120, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+    Paint_DrawRectangle(20, 70, 70, 120, BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY);
+    Paint_DrawRectangle(80, 70, 130, 120, BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+    Paint_DrawCircle(45, 95, 20, BLACK, DOT_PIXEL_1X1, DRAW_FILL_EMPTY);
+    Paint_DrawCircle(105, 95, 20, WHITE, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+    Paint_DrawLine(85, 95, 125, 95, BLACK, DOT_PIXEL_1X1, LINE_STYLE_DOTTED);
+    Paint_DrawLine(105, 75, 105, 115, BLACK, DOT_PIXEL_1X1, LINE_STYLE_DOTTED);
+    Paint_DrawString_EN(10, 0, "waveshare", &Font16, BLACK, WHITE);
+    Paint_DrawString_EN(10, 20, "hello world", &Font12, WHITE, BLACK);
+    Paint_DrawNum(10, 33, 123456789, &Font12, BLACK, WHITE);
+    Paint_DrawNum(10, 50, 987654321, &Font16, WHITE, BLACK);
+    */
+    EPD_352_display(imagenoir);
+    EPD_352_lut_GC();
+    EPD_352_refresh();
 
+    HAL_Delay(2000);
 
 
 
@@ -153,19 +246,19 @@ int main(void)
   while (1)
   {
 	  //HAL_GPIO_TogglePin(SPI1_SCK_GPIO_Port,SPI1_SCK_Pin);
-	  HAL_Delay(10000);
-    uint8_t patterns[] = {
-      EPD_3IN52_BLACK,
-      EPD_3IN52_WHITE,
-      EPD_3IN52_Chessboard,
-      EPD_3IN52_Crosstalk,
-      EPD_3IN52_Image
-    };
-    for (int i = 0; i < sizeof(patterns)/sizeof(patterns[0]); i++) {
-      EPD_352_display_NUM(patterns[i]);
-      EPD_352_lut_GC();
-      EPD_352_refresh();
+	HAL_GPIO_TogglePin(LD4_GPIO_Port,LD4_Pin);
+	HAL_GPIO_TogglePin(LD3_GPIO_Port,LD3_Pin);
+	HAL_GPIO_TogglePin(LD5_GPIO_Port,LD5_Pin);
+	HAL_GPIO_TogglePin(LD6_GPIO_Port,LD6_Pin);
+    if(interfaceB1.etatDuBouton == INTERFACEB1_APPUYE)
+    {
+      interfaceT1_allume();
     }
+    else if(interfaceB1.etatDuBouton == INTERFACEB1_RELACHE)
+    {
+      interfaceT1_eteint();
+    }
+	HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -194,8 +287,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -325,6 +418,89 @@ static void MX_SPI2_Init(void)
   /* USER CODE BEGIN SPI2_Init 2 */
 
   /* USER CODE END SPI2_Init 2 */
+
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 11;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 0;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 65535;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_ENABLE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
 
 }
 

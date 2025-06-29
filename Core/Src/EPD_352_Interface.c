@@ -13,6 +13,8 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_spi.h"
+
+#include "../Pilotes/PiloteIO_SPI_EPAPER.h"
 #include "EPD_352_Interface.h"
 
 extern SPI_HandleTypeDef hspi1;
@@ -26,10 +28,10 @@ unsigned char EPD_352_FLAG = 0; // Flag
 void EPD_352_SendCommand(uint8_t Reg)
 {
   HAL_GPIO_WritePin(DAT_COM_GPIO_Port, DAT_COM_Pin, 0);
-  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, 0);
+  Pilote_CS0_EPAPER_metAZero(); // Set CS low to select the device
   //HAL_SPI_Transmit(&hspi2, &Reg, 1, 1000);
   HAL_SPI_Transmit(&hspi1, &Reg, 1, 1000);
-  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, 1);
+  Pilote_CS0_EPAPER_metAUn(); // Set CS high to deselect the device
 }
 
 /**
@@ -40,10 +42,10 @@ void EPD_352_SendCommand(uint8_t Reg)
 void EPD_352_SendData(uint8_t Data)
 {
   HAL_GPIO_WritePin(DAT_COM_GPIO_Port, DAT_COM_Pin, 1);
-  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, 0);
+  Pilote_CS0_EPAPER_metAZero(); // Set CS low to select the device
   //HAL_SPI_Transmit(&hspi2, &Data, 1, 1000);
   HAL_SPI_Transmit(&hspi1, &Data, 1, 1000);
-  HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, 1);
+  Pilote_CS0_EPAPER_metAUn(); // Set CS high to deselect the device
 }
 /**
  * @brief 

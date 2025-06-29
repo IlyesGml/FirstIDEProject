@@ -1,0 +1,3 @@
+../Core/Interfaces/interfaceT4.c:26:6:interfaceT4_allume	1
+../Core/Interfaces/interfaceT4.c:31:6:interfaceT4_eteint	1
+../Core/Interfaces/interfaceT4.c:36:6:interfaceT4_initialise	1

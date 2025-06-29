@@ -1,0 +1,3 @@
+../Core/Interfaces/interfaceT1.c:26:6:interfaceT1_allume	8	static
+../Core/Interfaces/interfaceT1.c:31:6:interfaceT1_eteint	8	static
+../Core/Interfaces/interfaceT1.c:36:6:interfaceT1_initialise	8	static
