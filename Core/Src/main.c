@@ -193,8 +193,6 @@ int main(void)
 	  HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
           return -1;
       }
-  uart_len = sprintf(uart_buf, "Paint_NewImage\r\n");
-  HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_len, HAL_MAX_DELAY);
   Paint_NewImage(imagenoir, EPD_3IN52_WIDTH, EPD_3IN52_HEIGHT, ROTATE_270, WHITE);
   Paint_Clear(WHITE);
 
@@ -205,16 +203,17 @@ int main(void)
   EPD_352_display(imagenoir);
   EPD_352_lut_GC();
   EPD_352_refresh();
-  HAL_Delay(2000);
+/*  HAL_Delay(2000);
 
     Paint_SelectImage(imagenoir);
     Paint_Clear(WHITE);
-    EPD_352_lut_GC();
+    EPD_352_lut_GC();  m,                                      <
+    <                       
     EPD_352_refresh();
     EPD_352_display(imagenoir);
     Paint_SelectImage(imagenoir);
     Paint_Clear(WHITE);
-/*
+
     Paint_DrawPoint(10, 80, BLACK, DOT_PIXEL_1X1, DOT_STYLE_DFT);
     Paint_DrawPoint(10, 90, BLACK, DOT_PIXEL_2X2, DOT_STYLE_DFT);
     Paint_DrawPoint(10, 100, BLACK, DOT_PIXEL_3X3, DOT_STYLE_DFT);
@@ -230,11 +229,11 @@ int main(void)
     Paint_DrawString_EN(10, 20, "hello world", &Font12, WHITE, BLACK);
     Paint_DrawNum(10, 33, 123456789, &Font12, BLACK, WHITE);
     Paint_DrawNum(10, 50, 987654321, &Font16, WHITE, BLACK);
-    */
+
     EPD_352_display(imagenoir);
     EPD_352_lut_GC();
     EPD_352_refresh();
-
+*/
     HAL_Delay(2000);
 
 
@@ -245,20 +244,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //HAL_GPIO_TogglePin(SPI1_SCK_GPIO_Port,SPI1_SCK_Pin);
-	HAL_GPIO_TogglePin(LD4_GPIO_Port,LD4_Pin);
-	HAL_GPIO_TogglePin(LD3_GPIO_Port,LD3_Pin);
-	HAL_GPIO_TogglePin(LD5_GPIO_Port,LD5_Pin);
-	HAL_GPIO_TogglePin(LD6_GPIO_Port,LD6_Pin);
-    if(interfaceB1.etatDuBouton == INTERFACEB1_APPUYE)
-    {
-      interfaceT1_allume();
-    }
-    else if(interfaceB1.etatDuBouton == INTERFACEB1_RELACHE)
-    {
-      interfaceT1_eteint();
-    }
-	HAL_Delay(1000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
